@@ -4,3 +4,4 @@ Scripts
 .idea
 
 lab_1/pyvenv.cfg
+*.pyc
