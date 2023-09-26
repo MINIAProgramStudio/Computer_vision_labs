@@ -16,7 +16,7 @@ while True:
 
     if input("Do you wish to save masked picture? (Y/N) ") in ["Yes","yes","Y","y"]:
         cv2.destroyAllWindows()
-        Image_mask.path = input("input path: ")
+        Image_mask.path = input("save path: ")
         Image_mask.save()
     else:
         cv2.destroyAllWindows()
