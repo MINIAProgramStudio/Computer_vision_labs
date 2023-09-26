@@ -14,6 +14,9 @@ class ImageContainer:
         cv2.imshow(self.path, self.data)
         cv2.waitKey(0)
 
+    def save(self):
+        cv2.imwrite(self.path, self.data)
+
 def IC_to_monochrome(input_IC): #create monochromatic copy of an image
     if type(input_IC.data[0][0]) != list or not isinstance(input_IC,ImageContainer):
         Exception("IC_to_monochrome accepts only rgb image containers")
@@ -30,13 +33,13 @@ def IC_to_monochrome(input_IC): #create monochromatic copy of an image
 
     return output_IC #return a monochromatic copy
 
-def monochrome_to_binary(input_IC, method = "otsu"):
+def monochrome_to_binary(input_IC):
     if type(input_IC.data[0][0])!=int or not isinstance(input_IC,ImageContainer):
         Exception("monochrome_to_binary accepts only monochromatic image containers")
     output_IC = copy.deepcopy(input_IC)  # create copy of an image
     output_IC.path = None  # delete a path of a copy
 
-    if method == "otsu":
+    if True:
         brightness_graph = [0]*256
         for row in input_IC.data:
             for pixel in row:
