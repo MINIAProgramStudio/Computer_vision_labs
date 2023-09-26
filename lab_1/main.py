@@ -2,9 +2,13 @@ import numpy
 import cv2
 import image_handler as IH
 
-Watermelon = IH.ImageContainer("img\watermelon.jpg") #import the image
-Watermelon_monochrome = IH.IC_to_monochrome(Watermelon) #monochromatic copy of the image
-Watermelon_binary = IH.monochrome_to_binary(Watermelon_monochrome) #binary mask of the image
-Watermelon_monochrome.show() #show monochromatic image
-Watermelon_binary.show() #show binary mask
-Watermelon.show() #show that original image is untouched
+Image = IH.ImageContainer(input("relative path: ")) #import the image
+print("Please wait. Operations may take a while")
+Image_monochrome = IH.IC_to_monochrome(Image) #monochromatic copy of the image
+Image_binary = IH.monochrome_to_binary(Image_monochrome, method="otsu") #binary mask of the image
+Image_mask = IH.mask_cut(Image_binary,Image, negative=True) #cutting out the mask
+
+Image_monochrome.show() #show monochromatic image
+Image_binary.show() #show binary mask
+Image_mask.show() #sow cut image
+Image.show() #show that original image is untouched

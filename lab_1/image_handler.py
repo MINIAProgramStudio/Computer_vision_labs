@@ -81,11 +81,9 @@ def monochrome_to_binary(input_IC, method = "otsu"):
         t_max = 0
         for t in range(0,255):
             value = main_disp(t)
-            print(value)
             if value > max_val:
                 t_max = t
                 max_val = value
-        print(t_max)
         pos_y = 0
         for row in output_IC.data:
             pos_x = 0
@@ -98,3 +96,33 @@ def monochrome_to_binary(input_IC, method = "otsu"):
             pos_y += 1
 
         return output_IC
+
+
+def mask_cut(mask_IC, input_IC, negative = False):
+    if type(mask_IC.data[0][0])!=int or not isinstance(input_IC,ImageContainer) or not isinstance(mask_IC,ImageContainer):
+        Exception("mask_cut accepts only binary image containers for masks and image containers for input_IC")
+
+    if mask_IC.data.size != input_IC.data.size:
+        Exception("mask must have the same size and shape as the image")
+    output_IC = copy.deepcopy(input_IC)  # create copy of an image
+    output_IC.path = None  # delete a path of a copy
+
+    if negative:
+        pos_y = 0
+        for row in input_IC.data:
+            pos_x = 0
+            for pixel in row:
+                if (mask_IC.data[pos_y][pos_x] == 255).all():
+                    output_IC.data[pos_y][pos_x] = [0,0,0]
+                pos_x += 1
+            pos_y += 1
+    else:
+        pos_y = 0
+        for row in input_IC.data:
+            pos_x = 0
+            for pixel in row:
+                if (mask_IC.data[pos_y][pos_x] == 0).all():
+                    output_IC.data[pos_y][pos_x] = [0,0,0]
+                pos_x += 1
+            pos_y += 1
+    return output_IC
