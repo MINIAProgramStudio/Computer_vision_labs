@@ -15,5 +15,8 @@ while True:
     Image.show() #show that original image is untouched
 
     if input("Do you wish to save masked picture? (Y/N) ") in ["Yes","yes","Y","y"]:
+        cv2.destroyAllWindows()
         Image_mask.path = input("input path: ")
         Image_mask.save()
+    else:
+        cv2.destroyAllWindows()
