@@ -2,6 +2,7 @@ Include
 Lib
 Scripts
 .idea
+img
 
 lab_1/pyvenv.cfg
 *.pyc

@@ -28,10 +28,11 @@ class ImageContainer:
                 row_min = min(min(row))
                 if row_max > maximum: maximum = row_max
                 if row_min < minimum: minimum = row_min
-            for row in range(len(self.data))
+            for row in range(len(self.data)):
                 for column in range(len(self.data[row])):
-                    for color in range(0,3):
-                        self.data[row][column][color] = int((self.data[row][column][color] + minimum) / ((maximum - minimum) / 255))
+                    for color in range(0, 3):
+                        self.data[row][column][color] = int(
+                            (self.data[row][column][color] + minimum) / ((maximum - minimum) / 255))
         else:
             maximum = float('-inf')
             minimum = float('inf')
@@ -40,7 +41,7 @@ class ImageContainer:
                 row_min = min(row)
                 if row_max > maximum: maximum = row_max
                 if row_min < minimum: minimum = row_min
-            for row in range(len(self.data))
+            for row in range(len(self.data)):
                 for pixel in range(len(self.data[row])):
                     self.data[row][pixel] = int((self.data[row][pixel] + minimum) / ((maximum - minimum) / 255))
 
@@ -162,3 +163,45 @@ def mask_cut(mask_IC, input_IC, negative=False):
     return output_IC
 
 
+class Convolution_filter:
+    def __init__(self, matrix):
+        self.matrix = matrix
+
+    def apply(self, input_IC):
+        if isinstance(input_IC.data[0][0], list):
+            pass
+        else:
+            operation_IC = copy.deepcopy(input_IC)
+            operation_IC.path = None
+            output_IC = copy.deepcopy(input_IC)
+            output_IC.path = None
+
+            original_width = len(operation_IC.data[0])
+            matrix_height = len(self.matrix)
+            matrix_width = len(self.matrix[0])
+
+            operation_IC.data = numpy.concatenate(([[[0,0,0]] * original_width] * int(
+                matrix_height / 2), operation_IC.data))  # add empty rows at top
+            operation_IC.data = numpy.concatenate((operation_IC.data, [[[0,0,0]] * original_width] * int(
+                matrix_width / 2)))  # add empty rows at bottom
+
+            for row in range(len(operation_IC.data)):
+                waiter = numpy.concatenate(([[0,0,0]] * int(matrix_height / 2), operation_IC.data[row]))  # add empty columns at left
+                operation_IC.data[row] = numpy.pad(operation_IC.data[row],int(len(operation_IC.data[row]) + matrix_height / 2)*3)
+                operation_IC.data[row] = waiter
+                operation_IC.data[row] = numpy.concatenate((operation_IC.data[row], [[0] * original_width] * int(
+                    matrix_height / 2)))  # add empty columns at right
+
+        for row in range(0, len(input_IC)):
+            row += int(matrix_width / 2)
+        for column in range(0, len(row)):
+            column += int(matrix_height / 2)
+        matrix_for_position_sum = 0
+        for pos_x in range(-int(matrix_height / 2), int(matrix_height / 2 + 1)):
+            for pos_y in range(-int(matrix_width / 2), int(matrix_width / 2 + 1)):
+                matrix_for_position_sum += self.matrix[pos_x][pos_y] * operation_IC.data[pos_x + row][
+                    pos_y + column]
+
+        output_IC.data[row][column] = matrix_for_position_sum
+        output_IC.standardize()
+        return output_IC

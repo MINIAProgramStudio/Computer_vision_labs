@@ -1,22 +1,16 @@
-import numpy
 import cv2
 import image_handler as IH
 
 while True:
-    Image = IH.ImageContainer(input("relative path: ")) #import the image
-    print("Please wait. Operations may take a while")
+    Image = IH.ImageContainer(input("Relative path: ")) #import the image
     Image_monochrome = IH.IC_to_monochrome(Image) #monochromatic copy of the image
-    Image_binary = IH.monochrome_to_binary(Image_monochrome) #binary mask of the image
-    Image_mask = IH.mask_cut(Image_binary,Image, negative=True) #cutting out the mask
-
+    Filter = IH.Convolution_filter([
+        [0,0,0],
+        [0,1,0],
+        [0,0,0]
+    ])
+    Image_filtered = Filter.apply(Image_monochrome)
     Image_monochrome.show() #show monochromatic image
-    Image_binary.show() #show binary mask
-    Image_mask.show() #sow cut image
-    Image.show() #show that original image is untouched
+    Image_filtered.show() #show filtered image
 
-    if input("Do you wish to save masked picture? (Y/N) ") in ["Yes","yes","Y","y"]:
-        cv2.destroyAllWindows()
-        Image_mask.path = input("save path: ")
-        Image_mask.save()
-    else:
-        cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
