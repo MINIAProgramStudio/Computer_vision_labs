@@ -8,6 +8,7 @@ class ImageContainer:
         if path != None:  # if path is defined, import the image
             self.path = path
             self.data = cv2.imread(path).astype('int')
+
     path = None
     data = []
 
@@ -29,14 +30,18 @@ class ImageContainer:
         for row in range(len(self.data)):
             for column in range(len(self.data[row])):
                 for color in range(0, 3):
-                    self.data[row][column][color] = int((self.data[row][column][color] - minimum)*255/ (maximum - minimum))
+                    self.data[row][column][color] = int(
+                        (self.data[row][column][color] - minimum) * 255 / (maximum - minimum))
 
     def cut(self):
         for row in range(len(self.data)):
             for column in range(len(self.data[row])):
                 for color in range(0, 3):
-                    if self.data[row][column][color] > 255: self.data[row][column][color] = 255
-                    elif self.data[row][column][color] < 0: self.data[row][column][color] = 0
+                    if self.data[row][column][color] > 255:
+                        self.data[row][column][color] = 255
+                    elif self.data[row][column][color] < 0:
+                        self.data[row][column][color] = 0
+
 
 def IC_to_monochrome(input_IC):  # create monochromatic copy of an image
     if type(input_IC.data[0][0]) != list or not isinstance(input_IC, ImageContainer):
@@ -158,6 +163,10 @@ def mask_cut(mask_IC, input_IC, negative=False):
 class Convolution_filter:
     def __init__(self, matrix):
         self.matrix = matrix
+        self.sum = 0
+        for i in range(len(matrix)):
+            for ii in range(len(matrix[i])):
+                self.sum+=self.matrix[i][ii]
 
     def apply(self, input_IC):
         if isinstance(input_IC.data[0][0], list):
@@ -167,20 +176,27 @@ class Convolution_filter:
             operation_IC.path = None
             output_IC = copy.deepcopy(input_IC)
             output_IC.path = None
-
-            original_width = len(operation_IC.data[0])
+            original_height = int(len(output_IC.data))
+            original_width = int(len(output_IC.data[0]))
             matrix_height = len(self.matrix)
             matrix_width = len(self.matrix[0])
 
-            operation_IC.data = numpy.pad(operation_IC.data,((int(matrix_height/2),int(matrix_height/2)+1),(int(matrix_width/2),int(matrix_width/2)+1),(0,0)),mode='constant')
-        for row in range(0, len(input_IC.data)):
-            row += int(matrix_width / 2)
-            for column in range(0, len(input_IC.data[0])):
-                column += int(matrix_height / 2)
+            operation_IC.data = numpy.pad(operation_IC.data, (
+            (int(matrix_height / 2), int(matrix_height / 2) + 1), (int(matrix_width / 2), int(matrix_width / 2) + 1),
+            (0, 0)), mode='constant')
+        for row in range(0, original_height):
+            row = row + int(matrix_height / 2)
+            for column in range(0, original_width):
+                column = column + int(matrix_width / 2)
                 matrix_for_position = []
-                for pos_x in range(-int(matrix_height / 2), int(matrix_height / 2 + 1)):
-                    for pos_y in range(-int(matrix_width / 2), int(matrix_width / 2 + 1)):
-                        matrix_for_position.append(self.matrix[pos_x][pos_y] * operation_IC.data[pos_x + row][
-                            pos_y + column])
-                output_IC.data[row-int(matrix_width / 2)][column-int(matrix_height / 2)] = sum(matrix_for_position)
+
+                for pos_y in range(-int(matrix_height / 2), int(matrix_height / 2 + 1)):
+                    for pos_x in range(-int(matrix_width / 2), int(matrix_width / 2 + 1)):
+                        matrix_for_position.append(self.matrix[pos_y][pos_x] * operation_IC.data[pos_y + row][
+                            pos_x + column])
+                output_IC.data[row - int(matrix_height / 2)][column - int(matrix_width / 2)] = sum(matrix_for_position)
+        if self.sum == 0:
+            output_IC.cut()
+        else:
+            output_IC.standardize()
         return output_IC
