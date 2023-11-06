@@ -7,44 +7,36 @@ class ImageContainer:
     def __init__(self, path=None):
         if path != None:  # if path is defined, import the image
             self.path = path
-            self.data = cv2.imread(path)
-
+            self.data = cv2.imread(path).astype('int')
     path = None
     data = []
 
     def show(self):  # show the image and wait for anykey
-        cv2.imshow(self.path, self.data)
+        cv2.imshow(self.path, self.data.astype('uint8'))
         cv2.waitKey(0)
 
     def save(self):
         cv2.imwrite(self.path, self.data)
 
     def standardize(self):
-        if isinstance(self.data[0], list):
-            maximum = float('-inf')
-            minimum = float('inf')
-            for row in self.data:
-                row_max = max(max(row))
-                row_min = min(min(row))
-                if row_max > maximum: maximum = row_max
-                if row_min < minimum: minimum = row_min
-            for row in range(len(self.data)):
-                for column in range(len(self.data[row])):
-                    for color in range(0, 3):
-                        self.data[row][column][color] = int(
-                            (self.data[row][column][color] + minimum) / ((maximum - minimum) / 255))
-        else:
-            maximum = float('-inf')
-            minimum = float('inf')
-            for row in self.data:
-                row_max = max(row)
-                row_min = min(row)
-                if row_max > maximum: maximum = row_max
-                if row_min < minimum: minimum = row_min
-            for row in range(len(self.data)):
-                for pixel in range(len(self.data[row])):
-                    self.data[row][pixel] = int((self.data[row][pixel] + minimum) / ((maximum - minimum) / 255))
+        maximum = float('-inf')
+        minimum = float('inf')
+        for row in self.data:
+            row_max = numpy.amax(numpy.amax(row))
+            row_min = numpy.amin(numpy.amin(row))
+            if row_max > maximum: maximum = row_max
+            if row_min < minimum: minimum = row_min
+        for row in range(len(self.data)):
+            for column in range(len(self.data[row])):
+                for color in range(0, 3):
+                    self.data[row][column][color] = int((self.data[row][column][color] - minimum)*255/ (maximum - minimum))
 
+    def cut(self):
+        for row in range(len(self.data)):
+            for column in range(len(self.data[row])):
+                for color in range(0, 3):
+                    if self.data[row][column][color] > 255: self.data[row][column][color] = 255
+                    elif self.data[row][column][color] < 0: self.data[row][column][color] = 0
 
 def IC_to_monochrome(input_IC):  # create monochromatic copy of an image
     if type(input_IC.data[0][0]) != list or not isinstance(input_IC, ImageContainer):
@@ -180,28 +172,15 @@ class Convolution_filter:
             matrix_height = len(self.matrix)
             matrix_width = len(self.matrix[0])
 
-            operation_IC.data = numpy.concatenate(([[[0,0,0]] * original_width] * int(
-                matrix_height / 2), operation_IC.data))  # add empty rows at top
-            operation_IC.data = numpy.concatenate((operation_IC.data, [[[0,0,0]] * original_width] * int(
-                matrix_width / 2)))  # add empty rows at bottom
-
-            for row in range(len(operation_IC.data)):
-                waiter = numpy.concatenate(([[0,0,0]] * int(matrix_height / 2), operation_IC.data[row]))  # add empty columns at left
-                operation_IC.data[row] = numpy.pad(operation_IC.data[row],int(len(operation_IC.data[row]) + matrix_height / 2)*3)
-                operation_IC.data[row] = waiter
-                operation_IC.data[row] = numpy.concatenate((operation_IC.data[row], [[0] * original_width] * int(
-                    matrix_height / 2)))  # add empty columns at right
-
-        for row in range(0, len(input_IC)):
+            operation_IC.data = numpy.pad(operation_IC.data,((int(matrix_height/2),int(matrix_height/2)+1),(int(matrix_width/2),int(matrix_width/2)+1),(0,0)),mode='constant')
+        for row in range(0, len(input_IC.data)):
             row += int(matrix_width / 2)
-        for column in range(0, len(row)):
-            column += int(matrix_height / 2)
-        matrix_for_position_sum = 0
-        for pos_x in range(-int(matrix_height / 2), int(matrix_height / 2 + 1)):
-            for pos_y in range(-int(matrix_width / 2), int(matrix_width / 2 + 1)):
-                matrix_for_position_sum += self.matrix[pos_x][pos_y] * operation_IC.data[pos_x + row][
-                    pos_y + column]
-
-        output_IC.data[row][column] = matrix_for_position_sum
-        output_IC.standardize()
+            for column in range(0, len(input_IC.data[0])):
+                column += int(matrix_height / 2)
+                matrix_for_position = []
+                for pos_x in range(-int(matrix_height / 2), int(matrix_height / 2 + 1)):
+                    for pos_y in range(-int(matrix_width / 2), int(matrix_width / 2 + 1)):
+                        matrix_for_position.append(self.matrix[pos_x][pos_y] * operation_IC.data[pos_x + row][
+                            pos_y + column])
+                output_IC.data[row-int(matrix_width / 2)][column-int(matrix_height / 2)] = sum(matrix_for_position)
         return output_IC
