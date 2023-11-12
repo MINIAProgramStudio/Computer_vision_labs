@@ -161,9 +161,10 @@ def mask_cut(mask_IC, input_IC, negative=False):
 
 
 class Convolution_filter:
-    def __init__(self, matrix):
+    def __init__(self, matrix, cut = False):
         self.matrix = matrix
         self.sum = 0
+        self.cut = cut
         for i in range(len(matrix)):
             for ii in range(len(matrix[i])):
                 self.sum+=self.matrix[i][ii]
@@ -195,7 +196,7 @@ class Convolution_filter:
                         matrix_for_position.append(self.matrix[pos_y][pos_x] * operation_IC.data[pos_y + row][
                             pos_x + column])
                 output_IC.data[row - int(matrix_height / 2)][column - int(matrix_width / 2)] = sum(matrix_for_position)
-        if self.sum == 0:
+        if self.cut:
             output_IC.cut()
         else:
             output_IC.standardize()
