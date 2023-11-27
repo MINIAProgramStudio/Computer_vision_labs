@@ -1,6 +1,8 @@
 import image_handler as IH
+import numpy as np
 
-Right_10_Down_20 = IH.Convolution_filter([[1] + [0] * 18] + [[0] * 10] * 58)
+Right_10_Down_20 = IH.Convolution_filter(np.zeros((41,41)))
+Right_10_Down_20.matrix[-20][-10]=1
 
 Inversion = IH.Convolution_filter([[-1]])
 

@@ -1,6 +1,7 @@
 import numpy
 import cv2
 import copy
+from tqdm import tqdm
 
 
 class ImageContainer:
@@ -185,7 +186,7 @@ class Convolution_filter:
             operation_IC.data = numpy.pad(operation_IC.data, (
             (int(matrix_height / 2), int(matrix_height / 2) + 1), (int(matrix_width / 2), int(matrix_width / 2) + 1),
             (0, 0)), mode='constant')
-        for row in range(0, original_height):
+        for row in tqdm(range(0, original_height)):
             row = row + int(matrix_height / 2)
             for column in range(0, original_width):
                 column = column + int(matrix_width / 2)
