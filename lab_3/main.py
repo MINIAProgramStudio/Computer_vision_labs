@@ -7,6 +7,7 @@ import numpy
 while True:
     print("Please select a picture to filter.")
     Image = IH.ImageContainer(input("Relative path: >>>")) #import the image
+    print("Please wait: image is being preprocessed")
     Image_monochrome = IH.IC_to_monochrome(Image)
     Image_binary = IH.monochrome_to_binary(Image_monochrome)
     while True:
@@ -25,13 +26,16 @@ while True:
     print("2 -- Dilation")
     print("3 -- Closing")
     print("4 -- Opening")
-
+    print("5 -- Borderlines")
     match input(">>>"):
         case "0": Image_filtered = MP.test.apply(Image_binary)
         case "1": Image_filtered = MP.Erosion.apply(Image_binary)
         case "2": Image_filtered = MP.Dilation.apply(Image_binary)
         case "3": Image_filtered = MP.Erosion.apply(MP.Dilation.apply(Image_binary))
         case "4": Image_filtered = MP.Dilation.apply(MP.Erosion.apply(Image_binary))
+        case "5":
+            Image_filtered = MP.Dilation.apply(Image_binary)
+            Image_filtered.data = Image_filtered.data - MP.Erosion.apply(Image_binary).data
         case _:Image_filtered = MP.test.apply(Image_binary)
     print("Filter applied. Close the picture to proceed")
     Image_filtered.show()#show filtered image
