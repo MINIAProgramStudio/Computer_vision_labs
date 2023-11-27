@@ -29,7 +29,7 @@ while True:
     print("Filter applied. Close the picture to proceed")
     Image_filtered.show()#show filtered image
     print("Do you want to save the result? (Y/N)")
-    if input(">>>").lower() in ["y","n","yes","no"]:
+    if input(">>>").lower() in ["y","yes"]:
         Image_filtered.path = input("Relative path: >>>")
         Image_filtered.save()
     cv2.destroyAllWindows()
