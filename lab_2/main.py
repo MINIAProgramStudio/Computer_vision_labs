@@ -26,7 +26,7 @@ while True:
         case "7": Image_filtered = CFP.Borderlines.apply(Image)
         case "8": Image_filtered = CFP.iFilter.apply(Image)
         case _: continue
-    print("Filter applied. Please wait a moment while picture is loading to your definitively beautiful screen")
+    print("Filter applied. Close the picture to proceed")
     Image_filtered.show()#show filtered image
     print("Do you want to save the result? (Y/N)")
     if input(">>>").lower() in ["y","n","yes","no"]:
