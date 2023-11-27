@@ -14,7 +14,7 @@ while True:
     print("5 -- Sharpening")
     print("6 -- Sobel's vertical")
     print("7 -- Borderlines")
-    print("8 -- My filter")
+    print("8 -- My filter (wierd concatenation of powerful borderlines and blur filter)")
     selection = input(">>>")
     match selection:
         case "1": Image_filtered = CFP.Right_10_Down_20.apply(Image)
