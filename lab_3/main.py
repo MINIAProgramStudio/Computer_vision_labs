@@ -23,11 +23,15 @@ while True:
     print("0 -- Nothing")
     print("1 -- Erosion")
     print("2 -- Dilation")
+    print("3 -- Closing")
+    print("4 -- Opening")
 
     match input(">>>"):
         case "0": Image_filtered = MP.test.apply(Image_binary)
         case "1": Image_filtered = MP.Erosion.apply(Image_binary)
         case "2": Image_filtered = MP.Dilation.apply(Image_binary)
+        case "3": Image_filtered = MP.Erosion.apply(MP.Dilation.apply(Image_binary))
+        case "4": Image_filtered = MP.Dilation.apply(MP.Erosion.apply(Image_binary))
         case _:Image_filtered = MP.test.apply(Image_binary)
     print("Filter applied. Close the picture to proceed")
     Image_filtered.show()#show filtered image

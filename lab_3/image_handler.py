@@ -244,6 +244,9 @@ class Morfological_Operation:
                                 for pos_x in range(0, len(self.matrix[0])):
                                     if (operation_IC.data[row+pos_y-self.pos[1]-1][column+pos_x-self.pos[0]-1] >= [127,127,127]).all() and self.matrix[pos_y][pos_x]:
                                         hit = True
+                                        break
+                                if hit:
+                                    break
                             if hit:
                                 output_IC.data[row - len(self.matrix) + 1][column - len(self.matrix[0]) + 1] = [0,
                                                                                                                 0,
@@ -259,6 +262,8 @@ class Morfological_Operation:
                                 for pos_x in range(0, len(self.matrix[0])):
                                     if (operation_IC.data[row+pos_y-self.pos[1]-1][column+pos_x-self.pos[0]-1] <= [127,127,127]).all() and self.matrix[pos_y][pos_x]:
                                         fit = False
+                                        break
+                                if not fit: break
                             if fit:
                                 output_IC.data[row - len(self.matrix) + 1][column - len(self.matrix[0]) + 1] = [255,
                                                                                                                 255,
@@ -273,6 +278,9 @@ class Morfological_Operation:
                                 for pos_x in range(0, len(self.matrix[0])):
                                     if (operation_IC.data[row+pos_y-self.pos[1]-1][column+pos_x-self.pos[0]-1] >= [127,127,127]).all() and self.matrix[pos_y][pos_x]:
                                         hit = True
+                                        break
+                                if hit:
+                                    break
                             if hit:
                                 output_IC.data[row - len(self.matrix)+1][column - len(self.matrix[0]) + 1]=[255,255,255]
                             else:
