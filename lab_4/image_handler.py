@@ -311,9 +311,12 @@ def norm_noise(input_IC, mean = 0, var=0.1, a=0.5):
     noisy = output_IC.data*a + (1-a)*gauss
     output_IC.data = noisy
     output_IC.standardize()
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     return output_IC
 =======
+=======
+>>>>>>> 23ab6a33ca573b9087b8d07e01388d7322f54993
     return output_IC
 
 def median_filter(input_IC, size = 3):
@@ -333,6 +336,7 @@ def median_filter(input_IC, size = 3):
             output_IC.data[row][column] = pixels[median_pos]
     return output_IC
 
+<<<<<<< HEAD
 def w_median_filter(input_IC):
     weight_cf = Convolution_filter([[1,2,1],[2,4,2],[1,2,1]])
     output_IC = copy.deepcopy(input_IC)
@@ -340,3 +344,5 @@ def w_median_filter(input_IC):
     output_IC = weight_cf.apply(output_IC)
     return median_filter(output_IC)
 >>>>>>> Stashed changes
+=======
+>>>>>>> 23ab6a33ca573b9087b8d07e01388d7322f54993

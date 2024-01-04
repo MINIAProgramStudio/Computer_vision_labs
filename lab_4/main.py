@@ -30,8 +30,15 @@ while True:
     le_image_sp_w_median.path = "output/sp_w_median.png"
     le_image_sp_w_median.save()
 
+    le_image_sp_box = CFP.BoxAverage.apply(le_image_sp)
+    le_image_sp_box.show()
+
+    le_image_sp_median = IH.median_filter(le_image_sp)
+    le_image_sp_median.show()
+
     le_image_nn = IH.norm_noise(le_image,var=50)
     le_image_nn.show()
+<<<<<<< HEAD
     le_image_nn.path = "output/nn.png"
     le_image_nn.save()
 
@@ -50,3 +57,11 @@ while True:
     le_image_nn_w_median.path = "output/nn_w_median.png"
     le_image_nn_w_median.save()
 >>>>>>> Stashed changes
+=======
+
+    le_image_nn_box = CFP.BoxAverage.apply(le_image_nn)
+    le_image_nn_box.show()
+
+    le_image_nn_median = IH.median_filter(le_image_nn)
+    le_image_nn_median.show()
+>>>>>>> 23ab6a33ca573b9087b8d07e01388d7322f54993
