@@ -312,3 +312,21 @@ def norm_noise(input_IC, mean = 0, var=0.1, a=0.5):
     output_IC.data = noisy
     output_IC.standardize()
     return output_IC
+
+def median_filter(input_IC, size = 3):
+    if size%2==0 or size<1 or not isinstance(size,int):
+        raise Exception("size must be odd positive integer")
+    output_IC = copy.deepcopy(input_IC)
+    output_IC.path = ""
+    margin = int((size-1)/2)
+    median_pos = int(size**2/2)
+    for row in tqdm(range(margin,len(input_IC.data)-margin)):
+        for column in range(margin, len(input_IC.data[0])-margin):
+            pixels = []
+            for pos_y in range(-margin,margin+1):
+                for pos_x in range(-margin,margin+1):
+                    pixels.append(input_IC.data[row+pos_y][column+pos_x])
+            pixels = sorted(pixels, key = sum)
+            output_IC.data[row][column] = pixels[median_pos]
+    return output_IC
+
