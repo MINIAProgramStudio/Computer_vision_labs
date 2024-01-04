@@ -300,3 +300,15 @@ def sp_noise(input_IC, prob = 0.03, white = [255,255,255], black = [0,0,0]):
             elif rand > tres:
                 output_IC.data[i][ii] = black
     return output_IC
+
+def norm_noise(input_IC, mean = 0, var=0.1, a=0.5):
+    output_IC = copy.deepcopy(input_IC)
+    output_IC.path = ""
+    sigma = var**0.5
+    size_1, size_2 = len(input_IC.data), len(input_IC.data[0])
+    gauss = numpy.random.normal(mean, sigma, (size_1,size_2, 3))
+    gauss = gauss.reshape(size_1, size_2, 3)
+    noisy = output_IC.data*a + (1-a)*gauss
+    output_IC.data = noisy
+    output_IC.standardize()
+    return output_IC
