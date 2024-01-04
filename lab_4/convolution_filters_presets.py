@@ -86,3 +86,9 @@ iFilter = IH.Convolution_filter([
     [-1, -4, -4, -4, -1],
     [-1, -1, -1, -1, -1]
 ], cut=True)
+
+BoxAverage = IH.Convolution_filter([
+    [1,1,1],
+    [1,1,1],
+    [1,1,1]
+])
