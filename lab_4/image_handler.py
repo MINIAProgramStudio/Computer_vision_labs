@@ -2,6 +2,7 @@ import numpy
 import cv2
 import copy
 from tqdm import tqdm
+import random
 
 
 class ImageContainer:
@@ -286,3 +287,16 @@ class Morfological_Operation:
                             else:
                                 output_IC.data[row - len(self.matrix) + 1][column - len(self.matrix[0]) + 1] = [0,0,0]
         return output_IC
+
+def sp_noise(input_IC, prob = 0.03, white = [255,255,255], black = [0,0,0]):
+    output_IC = copy.deepcopy(input_IC)
+    output_IC.path = ""
+    tres = 1-prob
+    for i in range(len(input_IC.data)):
+        for ii in range(len(input_IC.data[0])):
+            rand = random.random()
+            if rand < prob:
+                output_IC.data[i][ii] = white
+            elif rand > tres:
+                output_IC.data[i][ii] = black
+    return output_IC
